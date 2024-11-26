@@ -7,6 +7,7 @@ using UnityEngine;
 public class Detection : MonoBehaviour
 {
     public static event Action<GameObject> PlayerDetected;
+    public static event Action<GameObject> PlayerEnter;
 
     public AudioClip huntPlayer;
     /*[SerializeField] 
@@ -24,7 +25,17 @@ public class Detection : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (PlayerDetected != null && other.name == "Cube")
+        if (PlayerEnter != null && other.name == "Cube")
+        {
+            SpawnPosManager.Instance.SetPosition(transform.position);
             AudioManager.Instance.Play(huntPlayer);
+            PlayerEnter(this.gameObject);
+        }
+            
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, 15);
     }
 }

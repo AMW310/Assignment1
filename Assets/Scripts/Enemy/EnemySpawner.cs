@@ -4,23 +4,36 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public GameObject enemy;
+    [SerializeField] private ObjectPool objectPool;
+
     private EnemyFactory factory;
     public int enemyCount;
 
-    void Start()
+    private int totalEnemies;
+
+    void OnEnable()
     {
-        factory = new EnemyFactory(enemy);
-        for (int i = 0; i < enemyCount; i++)
-        {
-            var position = new Vector3(Random.Range(-10.5f, 10.0f), 0, Random.Range(14.5f, 35.5f));
-            SpawnEnemyAtPosition(position);
-        }
+        Detection.PlayerEnter += SpawnEnemyAtPosition;
     }
 
-    public void SpawnEnemyAtPosition(Vector3 position)
+    void OnDisable()
     {
-        factory.SpawnEnemy(position);
+        Detection.PlayerEnter -= SpawnEnemyAtPosition;
+    }
+
+public void SpawnEnemyAtPosition(GameObject obj)
+    {
+        //Debug.Log(obj.transform.position);
+        for (int i = 0; i < enemyCount; i++)
+        {
+            if (totalEnemies >= enemyCount)
+                break;
+
+            GameObject enemy = objectPool.GetPooledEnemy();
+            factory = new EnemyFactory(enemy);
+            enemy.transform.position = factory.GetRndPosition();
+            totalEnemies++;
+        }
+        
     }
 }

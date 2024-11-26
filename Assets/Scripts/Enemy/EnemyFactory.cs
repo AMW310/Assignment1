@@ -13,11 +13,18 @@ public class EnemyFactory
         this.enemyPrefab = enemyPrefab;
     }
 
-    public GameObject SpawnEnemy(Vector3 position)
+    public GameObject SpawnEnemy()
     {
+        Vector3 position = GetRndPosition();
         GameObject enemy = Object.Instantiate(enemyPrefab, position, Quaternion.identity);
-        EnemyBehaviour script = enemy.GetComponent<EnemyBehaviour>();
 
         return enemy;
+    }
+
+    public Vector3 GetRndPosition()
+    {
+        Vector3 spawnPoint = SpawnPosManager.Instance.GetPosition();
+        var position = new Vector3(Random.Range(spawnPoint.x - 10, spawnPoint.x + 10f), 0, Random.Range(spawnPoint.z - 10, spawnPoint.z + 10f));
+        return position;
     }
 }

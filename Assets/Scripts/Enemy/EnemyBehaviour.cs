@@ -7,9 +7,8 @@ using UnityEngine.AI;
 public class EnemyBehaviour : MonoBehaviour
 {
     private GameObject target;
-    public Vector3 rndPos;
+    private Vector3 rndPos;
     private NavMeshAgent agent;
-    private Rigidbody rb;
 
     private bool shouldChase;
     private bool commanded;
@@ -17,7 +16,6 @@ public class EnemyBehaviour : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
         InvokeRepeating(nameof(WanderDestination), 1f, 5f);
     }
 
@@ -46,7 +44,7 @@ public class EnemyBehaviour : MonoBehaviour
     public void Seek()
     {
         commanded = true;
-        //Debug.Log("Seeking Player");
+        Debug.Log("Seeking Player");
         agent.stoppingDistance = 2f;
         agent.speed = 3f;
         agent.destination = target.transform.position;
@@ -75,14 +73,11 @@ public class EnemyBehaviour : MonoBehaviour
     }
     void WanderDestination()
     {
-        rndPos = new Vector3(Random.Range(-20.0f, 20.0f), 0, Random.Range(0.0f, 40.0f));
+        Vector3 spawnPoint = SpawnPosManager.Instance.GetPosition();
+        rndPos = new Vector3(Random.Range(spawnPoint.x - 15, spawnPoint.x + 15f), 0, Random.Range(spawnPoint.z - 15, spawnPoint.z + 15f));
     }
     void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "ZoneDetection")
-        {
-            //Debug.Log("1");
-            shouldChase = true;
-        }
+    { 
+        shouldChase = true;
     }
 }

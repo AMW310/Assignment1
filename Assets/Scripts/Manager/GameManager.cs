@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public PlayerController player;
-    public EnemyBehaviour [] enemy;
+    [SerializeField]private PlayerController player;
+    [SerializeField]private EnemyBehaviour [] enemy;
+    [SerializeField]private ObjectPool pool;
     private bool command;
 
     void Start()
     {
-        StartCoroutine(SetEnemy());
+        
     }
 
     void OnEnable()
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
     
     void OnDisable()
     {
-        Detection.PlayerDetected += Command;
+        Detection.PlayerDetected -= Command;
     }
 
     
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.I))
             {
-                for (int i = 0; i < enemy.Length; i++)
+                for (var i = 0; i < enemy.Length; i++)
                 {
                     player.CommandEnemy(new SeekCommands(), enemy[i]);
                     Debug.Log(i);
@@ -54,7 +55,7 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKey(KeyCode.O))
             {
-                for (int i = 0; i < enemy.Length; i++)
+                for (var i = 0; i < enemy.Length; i++)
                 {
                     player.CommandEnemy(new FleeCommands(), enemy[i]);
                 }
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKey(KeyCode.P))
             {
-                for (int i = 0; i < enemy.Length; i++)
+                for (var i = 0; i < enemy.Length; i++)
                 {
                     player.CommandEnemy(new WanderCommands(), enemy[i]);
                 }
@@ -72,5 +73,6 @@ public class GameManager : MonoBehaviour
     void Command(GameObject obj)
     {
         command = true;
+        StartCoroutine(SetEnemy());
     }
 }
