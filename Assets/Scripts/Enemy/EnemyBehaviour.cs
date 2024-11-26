@@ -13,6 +13,7 @@ public class EnemyBehaviour : MonoBehaviour
     private bool shouldChase;
     private bool commanded;
 
+    private Vector3 lastPos;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -44,10 +45,16 @@ public class EnemyBehaviour : MonoBehaviour
     public void Seek()
     {
         commanded = true;
+        if (Vector3.Distance(lastPos, target.transform.position) > 1f)
+        {
+            lastPos = target.transform.position;
+            agent.destination = lastPos;
+        }
+        
         Debug.Log("Seeking Player");
         agent.stoppingDistance = 2f;
         agent.speed = 3f;
-        agent.destination = target.transform.position;
+        agent.autoBraking = false;
         agent.isStopped = false;
     }
 
